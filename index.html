@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
         :root {
-            --bg-color: transparent;
-            --timer-color: #37352f; /* Color de los números */
-            --accent-color: #eb5757; /* Color de botones y modos */
+            --bg-color: #ffffff;
+            --timer-color: #37352f;
+            --accent-color: #eb5757;
+            --button-bg: #ffffff;
         }
 
         body {
@@ -18,8 +19,8 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            overflow: hidden;
             background-color: var(--bg-color);
+            overflow: hidden;
         }
 
         /* Modos */
@@ -30,14 +31,14 @@
         }
 
         .mode-btn {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 1.5px;
             cursor: pointer;
             border: none;
             background: none;
             color: #a0a0a0;
-            padding: 5px 0;
+            padding: 5px;
             transition: 0.3s;
         }
 
@@ -47,17 +48,16 @@
             border-bottom: 2px solid var(--accent-color);
         }
 
-        /* Timer - Centrado y Limpio */
+        /* Temporizador */
         .timer-display {
             font-size: 5rem;
             font-weight: 700;
             margin: 10px 0;
-            letter-spacing: -3px;
-            color: var(--timer-color);
-            line-height: 1;
+            letter-spacing: -4px;
+            color: var(--timer-color); /* Color de los números separado */
         }
 
-        /* Controles Inferiores */
+        /* Botones */
         .controls {
             display: flex;
             align-items: center;
@@ -65,17 +65,14 @@
         }
 
         .btn {
-            background: none;
+            background: var(--button-bg);
             border: 1px solid #e0e0e0;
             padding: 8px 16px;
             border-radius: 20px;
             cursor: pointer;
-            font-size: 0.85rem;
-            color: #37352f;
+            font-size: 0.8rem;
+            color: var(--timer-color);
             transition: all 0.2s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
         }
 
         .btn:hover {
@@ -83,10 +80,19 @@
             background: #f9f9f9;
         }
 
-        .btn-settings {
-            padding: 8px;
-            border-radius: 50%;
-            font-size: 1.1rem;
+        .settings-toggle {
+            background: none;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 5px;
+            color: #a0a0a0;
+            transition: transform 0.3s;
+        }
+
+        .settings-toggle:hover {
+            color: var(--accent-color);
+            transform: rotate(45deg);
         }
 
         /* Panel de Configuración */
@@ -99,49 +105,34 @@
             background: white;
             border: 1px solid #eee;
             padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             z-index: 100;
             width: 220px;
         }
 
-        .settings-field { margin-bottom: 12px; }
-        .settings-field label {
-            display: block;
-            font-size: 0.75rem;
-            margin-bottom: 4px;
-            color: #666;
-            font-weight: 600;
-        }
-
-        input {
-            width: 100%;
-            padding: 6px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 0.9rem;
-        }
-
+        .field { margin-bottom: 10px; }
+        label { display: block; font-size: 0.7rem; color: #666; margin-bottom: 3px; }
+        input, select { width: 100%; padding: 5px; border-radius: 4px; border: 1px solid #ddd; font-size: 0.8rem; }
+        
         .save-btn {
             width: 100%;
-            background: var(--accent-color);
+            background: var(--timer-color);
             color: white;
             border: none;
-            padding: 10px;
-            border-radius: 8px;
+            padding: 8px;
+            border-radius: 6px;
             cursor: pointer;
-            font-weight: bold;
-            margin-top: 5px;
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
 
     <div class="modes">
-        <button class="mode-btn active" id="focoBtn" onclick="switchMode('foco')">Foco</button>
-        <button class="mode-btn" id="relajoBtn" onclick="switchMode('relajo')">Relajo</button>
-        <button class="mode-btn" id="descansoBtn" onclick="switchMode('descanso')">Descanso</button>
+        <button class="mode-btn active" id="focusModeBtn" onclick="switchMode('focus')">Focus</button>
+        <button class="mode-btn" id="relajoModeBtn" onclick="switchMode('relajo')">Relajo</button>
+        <button class="mode-btn" id="descansoModeBtn" onclick="switchMode('descanso')">Descanso</button>
     </div>
 
     <div class="timer-display" id="display">25:00</div>
@@ -150,48 +141,60 @@
         <button class="btn" onclick="startTimer()">Empezar</button>
         <button class="btn" onclick="pauseTimer()">Pausa</button>
         <button class="btn" onclick="resetTimer()">Reiniciar</button>
-        <button class="btn btn-settings" onclick="toggleSettings()">⚙️</button>
+        <button class="settings-toggle" onclick="toggleSettings()">⚙️</button>
     </div>
 
     <div id="settings-panel">
-        <div class="settings-field"><label>Minutos Foco:</label><input type="number" id="focoIn" value="25"></div>
-        <div class="settings-field"><label>Minutos Relajo:</label><input type="number" id="relajoIn" value="5"></div>
-        <div class="settings-field"><label>Minutos Descanso:</label><input type="number" id="descansoIn" value="15"></div>
-        <div class="settings-field"><label>Color Números:</label><input type="color" id="timerColorIn" value="#37352f"></div>
-        <div class="settings-field"><label>Color Interfaz:</label><input type="color" id="accentColorIn" value="#eb5757"></div>
+        <div class="field"><label>Minutos Focus:</label><input type="number" id="focusIn" value="25"></div>
+        <div class="field"><label>Minutos Relajo:</label><input type="number" id="relajoIn" value="5"></div>
+        <div class="field"><label>Minutos Descanso:</label><input type="number" id="descansoIn" value="15"></div>
+        <div class="field"><label>Color Números:</label><input type="color" id="numCol" value="#37352f"></div>
+        <div class="field"><label>Color Interfaz (Acento):</label><input type="color" id="accCol" value="#eb5757"></div>
+        <div class="field">
+            <label>Sonido de Alarma:</label>
+            <select id="soundSel">
+                <option value="https://actions.google.com/sounds/v1/alarms/beep_short.ogg">Sutil (Beep)</option>
+                <option value="https://actions.google.com/sounds/v1/alarms/digital_watch_alarm_long.ogg">Reloj Digital</option>
+                <option value="https://actions.google.com/sounds/v1/office/light_switch_on.ogg">Click Zen</option>
+            </select>
+        </div>
         <button class="save-btn" onclick="saveSettings()">Guardar</button>
     </div>
 
-    <audio id="alarmSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg"></audio>
+    <audio id="alarmSound"></audio>
 
     <script>
-        let config = {
-            foco: localStorage.getItem('foco') || 25,
+        let times = {
+            focus: localStorage.getItem('focus') || 25,
             relajo: localStorage.getItem('relajo') || 5,
-            descanso: localStorage.getItem('descanso') || 15,
-            timerColor: localStorage.getItem('timerColor') || '#37352f',
-            accentColor: localStorage.getItem('accentColor') || '#eb5757'
+            descanso: localStorage.getItem('descanso') || 15
         };
+        let colors = {
+            num: localStorage.getItem('numCol') || '#37352f',
+            acc: localStorage.getItem('accCol') || '#eb5757'
+        };
+        let selectedSound = localStorage.getItem('sound') || "https://actions.google.com/sounds/v1/alarms/beep_short.ogg";
         
-        let timeLeft = config.foco * 60;
+        let timeLeft = times.focus * 60;
         let timerId = null;
-        let currentMode = 'foco';
+        let currentMode = 'focus';
 
         function init() {
-            document.documentElement.style.setProperty('--timer-color', config.timerColor);
-            document.documentElement.style.setProperty('--accent-color', config.accentColor);
-            document.getElementById('focoIn').value = config.foco;
-            document.getElementById('relajoIn').value = config.relajo;
-            document.getElementById('descansoIn').value = config.descanso;
-            document.getElementById('timerColorIn').value = config.timerColor;
-            document.getElementById('accentColorIn').value = config.accentColor;
+            document.documentElement.style.setProperty('--timer-color', colors.num);
+            document.documentElement.style.setProperty('--accent-color', colors.acc);
+            document.getElementById('focusIn').value = times.focus;
+            document.getElementById('relajoIn').value = times.relajo;
+            document.getElementById('descansoIn').value = times.descanso;
+            document.getElementById('numCol').value = colors.num;
+            document.getElementById('accCol').value = colors.acc;
+            document.getElementById('soundSel').value = selectedSound;
             updateDisplay();
         }
 
         function updateDisplay() {
-            const min = Math.floor(timeLeft / 60);
-            const sec = timeLeft % 60;
-            document.getElementById('display').textContent = `${min}:${sec < 10 ? '0' : ''}${sec}`;
+            const m = Math.floor(timeLeft / 60);
+            const s = timeLeft % 60;
+            document.getElementById('display').textContent = `${m}:${s < 10 ? '0' : ''}${s}`;
         }
 
         function startTimer() {
@@ -202,7 +205,9 @@
                 if (timeLeft <= 0) {
                     clearInterval(timerId);
                     timerId = null;
-                    document.getElementById('alarmSound').play();
+                    const alarm = document.getElementById('alarmSound');
+                    alarm.src = selectedSound;
+                    alarm.play();
                 }
             }, 1000);
         }
@@ -211,14 +216,14 @@
 
         function resetTimer() {
             pauseTimer();
-            timeLeft = config[currentMode] * 60;
+            timeLeft = times[currentMode] * 60;
             updateDisplay();
         }
 
         function switchMode(mode) {
             currentMode = mode;
-            ['foco', 'relajo', 'descanso'].forEach(m => {
-                document.getElementById(m + 'Btn').classList.toggle('active', m === mode);
+            ['focus','relajo','descanso'].forEach(m => {
+                document.getElementById(`${m}ModeBtn`).classList.toggle('active', m === mode);
             });
             resetTimer();
         }
@@ -229,14 +234,20 @@
         }
 
         function saveSettings() {
-            config.foco = document.getElementById('focoIn').value;
-            config.relajo = document.getElementById('relajoIn').value;
-            config.descanso = document.getElementById('descansoIn').value;
-            config.timerColor = document.getElementById('timerColorIn').value;
-            config.accentColor = document.getElementById('accentColorIn').value;
+            times.focus = document.getElementById('focusIn').value;
+            times.relajo = document.getElementById('relajoIn').value;
+            times.descanso = document.getElementById('descansoIn').value;
+            colors.num = document.getElementById('numCol').value;
+            colors.acc = document.getElementById('accCol').value;
+            selectedSound = document.getElementById('soundSel').value;
 
-            Object.keys(config).forEach(key => localStorage.setItem(key, config[key]));
-            
+            localStorage.setItem('focus', times.focus);
+            localStorage.setItem('relajo', times.relajo);
+            localStorage.setItem('descanso', times.descanso);
+            localStorage.setItem('numCol', colors.num);
+            localStorage.setItem('accCol', colors.acc);
+            localStorage.setItem('sound', selectedSound);
+
             init();
             toggleSettings();
             resetTimer();
