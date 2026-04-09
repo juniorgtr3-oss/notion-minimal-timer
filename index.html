@@ -6,8 +6,8 @@
     <style>
         :root {
             --bg-color: transparent;
-            --timer-color: #37352f;
-            --accent-color: #eb5757;
+            --timer-color: #37352f; /* Gris oscuro estándar de Notion */
+            --accent-color: #ffb38a; /* Naranja pastel / Peach */
             --button-bg: #ffffff;
         }
 
@@ -77,7 +77,7 @@
 
         .btn:hover {
             border-color: var(--accent-color);
-            background: #f9f9f9;
+            background: #fffcfb;
         }
 
         .settings-toggle {
@@ -152,7 +152,7 @@
         <div class="field"><label>Minutos Break:</label><input type="number" id="breakIn" value="5"></div>
         <div class="field"><label>Minutos Descanso:</label><input type="number" id="descansoIn" value="15"></div>
         <div class="field"><label>Color Números:</label><input type="color" id="numCol" value="#37352f"></div>
-        <div class="field"><label>Color Interfaz:</label><input type="color" id="accCol" value="#eb5757"></div>
+        <div class="field"><label>Color Interfaz:</label><input type="color" id="accCol" value="#ffb38a"></div>
         <button class="save-btn" onclick="saveSettings()">Guardar Cambios</button>
     </div>
 
@@ -166,7 +166,7 @@
         };
         let colors = {
             num: localStorage.getItem('numCol') || '#37352f',
-            acc: localStorage.getItem('accCol') || '#eb5757'
+            acc: localStorage.getItem('accCol') || '#ffb38a'
         };
         
         let timeLeft = times.focus * 60;
@@ -193,19 +193,19 @@
 
         function stopAlarm() {
             alarm.pause();
-            alarm.currentTime = 0; // Reinicia el audio al principio
+            alarm.currentTime = 0;
         }
 
         function startTimer() {
             if (timerId) return;
-            stopAlarm(); // Detener alarma si se pulsa empezar mientras suena
+            stopAlarm();
             timerId = setInterval(() => {
                 timeLeft--;
                 updateDisplay();
                 if (timeLeft <= 0) {
                     clearInterval(timerId);
                     timerId = null;
-                    alarm.play(); // El loop está activado en el HTML
+                    alarm.play();
                 }
             }, 1000);
         }
@@ -213,12 +213,12 @@
         function pauseTimer() { 
             clearInterval(timerId); 
             timerId = null; 
-            stopAlarm(); // Detiene el sonido al pausar
+            stopAlarm(); 
         }
 
         function resetTimer() {
             pauseTimer();
-            stopAlarm(); // Asegura que el sonido se detenga al reiniciar
+            stopAlarm();
             timeLeft = times[currentMode] * 60;
             updateDisplay();
         }
